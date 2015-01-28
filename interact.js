@@ -57,16 +57,17 @@
 
         defaultOptions = {
             base: {
-                accept        : null,
-                actionChecker : null,
-                styleCursor   : true,
-                preventDefault: 'auto',
-                origin        : { x: 0, y: 0 },
-                deltaSource   : 'page',
-                allowFrom     : null,
-                ignoreFrom    : null,
-                _context      : document,
-                rectChecker   : null
+                accept            : null,
+                actionChecker     : null,
+                styleCursor       : true,
+                preventDefault    : 'auto',
+                origin            : { x: 0, y: 0 },
+                deltaSource       : 'page',
+                allowFrom         : null,
+                ignoreFrom        : null,
+                _context          : document,
+                rectChecker       : null,
+                pointerHoldDelay  : 600,
             },
 
             drag: {
@@ -1432,11 +1433,13 @@
                 eventCopy = events.useAttachEvent? extend({}, event) : event,
                 element = eventTarget,
                 pointerIndex = this.addPointer(pointer),
-                action;
+                action,
+                delay = this.target? this.target.options.pointerHoldDelay : 600;
+
 
             this.holdTimers[pointerIndex] = setTimeout(function () {
                 that.pointerHold(events.useAttachEvent? eventCopy : pointer, eventCopy, eventTarget, curEventTarget);
-            }, 600);
+            }, delay);
 
             this.pointerIsDown = true;
 
@@ -4404,18 +4407,32 @@
         },
 
         /*\
-         * Interactable.origin
-         [ method ]
+         * Interactable.pointerDelay
+         * Returns or sets the timeout delay in milliseconds for the pointer onhold timeout.
          *
-         * Gets or sets the origin of the Interactable's element.  The x and y
-         * of the origin will be subtracted from action event coordinates.
-         *
-         - origin (object | string) #optional An object eg. { x: 0, y: 0 } or string 'parent', 'self' or any CSS selector
-         * OR
-         - origin (Element) #optional An HTML or SVG Element whose rect will be used
-         **
-         = (object) The current origin or this Interactable
+         * milliseconds (integer)
         \*/
+        pointerHoldDelay: function(milliseconds) {
+            if (milliseconds)
+              return this.options.pointerHoldDelay = milliseconds;
+
+            return this.options.pointerHoldDelay;
+        },
+
+
+      /*\
+       * Interactable.origin
+       [ method ]
+       *
+       * Gets or sets the origin of the Interactable's element.  The x and y
+       * of the origin will be subtracted from action event coordinates.
+       *
+       - origin (object | string) #optional An object eg. { x: 0, y: 0 } or string 'parent', 'self' or any CSS selector
+       * OR
+       - origin (Element) #optional An HTML or SVG Element whose rect will be used
+       **
+       = (object) The current origin or this Interactable
+      \*/
         origin: function (newValue) {
             if (trySelector(newValue)) {
                 this.options.origin = newValue;
