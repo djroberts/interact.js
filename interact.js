@@ -4408,17 +4408,20 @@
 
         /*\
          * Interactable.pointerDelay
+         [ method]
+         *
          * Returns or sets the timeout delay in milliseconds for the pointer onhold timeout.
          *
          * milliseconds (integer)
         \*/
         pointerHoldDelay: function(milliseconds) {
-            if (milliseconds)
-              return this.options.pointerHoldDelay = milliseconds;
+          if (milliseconds) {
+            this.options.pointerHoldDelay = milliseconds;
+            return this;
+          }
 
-            return this.options.pointerHoldDelay;
+          return this.options.pointerHoldDelay;
         },
-
 
       /*\
        * Interactable.origin
